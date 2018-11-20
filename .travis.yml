@@ -4,13 +4,19 @@ sudo: true
 go:
   - "1.11"
 
+addons:
+ apt:
+ packages:
+ - snapd
+
 branches:
   only:
     - hugo-source 
 
 install:
   # - go get -u -v github.com/gohugoio/hugo
-  - snap install hugo --channel=extended
+  - sudo snap install hugo
+  - export PATH=/snap/bin:$PATH
 
 script:
   - hugo
