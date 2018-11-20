@@ -3,11 +3,10 @@ branches:
     - hugo-source 
 
 install:
-# 安装最新的hugo
+  - sudo apt-get update
   - sudo apt-get install hugo
 
 script:
-# 运行hugo命令
   - hugo
 
 deploy:
