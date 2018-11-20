@@ -1,4 +1,7 @@
-sudo: true
+language: go
+go:
+  - "1.11"
+
 branches:
   only:
     - hugo-source 
