@@ -1,4 +1,6 @@
 language: go
+dist: xenial
+sudo: true
 go:
   - "1.11"
 
@@ -7,7 +9,8 @@ branches:
     - hugo-source 
 
 install:
-  - go get -u -v github.com/gohugoio/hugo
+  # - go get -u -v github.com/gohugoio/hugo
+  - sudo  apt-get install hugo
 
 script:
   - hugo
