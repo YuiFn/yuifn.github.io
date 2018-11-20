@@ -4,8 +4,7 @@ branches:
     - hugo-source 
 
 install:
-  - sudo apt-get update
-  - sudo apt-get install hugo
+  - go get -u -v github.com/gohugoio/hugo
 
 script:
   - hugo
