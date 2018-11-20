@@ -37,4 +37,12 @@ fn main(){
 ```
 1..5
     |> Enum.map(&(&1 + 1))
-```    
+```
+
+#Dart
+```dart
+main(List<String> args) {
+  final list = [1, 2, 3, 4, 5];
+  list.map((x) => x + 1);
+}
+```
