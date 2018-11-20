@@ -1,0 +1,25 @@
+language: go
+
+go:
+  - "1.8"
+branches:
+  only:
+    - hugo-source 
+
+install:
+# 安装最新的hugo
+  - go get github.com/spf13/hugo 
+
+script:
+# 运行hugo命令
+  - hugo
+
+deploy:
+  provider: pages
+  skip-cleanup: true
+  local-dir: public
+  target-branch: master
+  github-token: $GITHUB_TOKEN
+  keep-history: true
+  on:
+    branch: hugo-source
