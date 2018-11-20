@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="content-language" content="en-us" />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=0.5">
+    
+    
+    <title>Hello</title>
+    <link rel="stylesheet" href="/css/stylesheet.css">
+
+    
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/xcode.min.css" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/rust.min.js"></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/go.min.js"></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/elixir.min.js"></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/scala.min.js"></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/ocaml.min.js"></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/dart.min.js"></script> <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/haskell.min.js"></script>
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="/css/main.css">
+    
+    
+</head>
+
+
+<body>
+    <script>
+        window.addEventListener("resize", resizeThrottler, false);
+
+        var resizeTimeout;
+        function resizeThrottler() {
+        
+        if ( !resizeTimeout ) {
+            resizeTimeout = setTimeout(function() {
+            resizeTimeout = null;
+            actualResizeHandler();
+        
+            
+            }, 66);
+        }
+        }
+        actualResizeHandler()
+        function actualResizeHandler() {
+                if (/mobile/i.test(navigator.userAgent) || /android/i.test(navigator.userAgent))
+                {
+                    document.body.classList.add('mobile');
+                }else{
+                    document.body.classList.remove('mobile');  
+                }
+        }</script>
+    
+
+
+    
+
+
+<div class="inner" style="position:relative;">
+  
+  <div class="side-btn"><a href="/" class="back">Home</a></div>
+  
+<div class="blog-post">
+  <h2>Hello</h2>
+        
+
+<h3 id="开篇higher-order-function-map">开篇Higher-Order-Function &ndash; Map</h3>
+
+<p>许久不写了,这次重新捡起.作为开篇没有太多内容要说,以<a href="https://clojurebridge.org/community-docs/docs/clojure/higher-order-function/">Higher-Order-Function</a>中的<strong>map</strong>函数来做简单的说明.
+Map是一个接受一个函数并把这个函数作为一个functor应用于每一个原属.如下图
+<img src="/imgs/map.png" alt="map" />
+下边看看各种语言的一个大概实现,代码的意思是对一个[1,5]的列表,对其每个元素➕1</p>
+
+<h4 id="scala">Scala</h4>
+
+<pre><code class="language-scala">val list = 1 to 5;
+list.map(_ + 1).toList();
+</code></pre>
+
+<h4 id="ocaml">Ocaml</h4>
+
+<pre><code class="language-ocaml">let plus = ( + );;
+(* 这里是为了对此,可以使用List.range 1 6;; *)
+let list = List.init 5 ~f:(plus 1);
+list 
+    |&gt; List.map ~f: plus
+    |&gt; List.map ~f: (fun fn -&gt; fn 1);;
+</code></pre>
+
+<h4 id="rust">Rust</h4>
+
+<pre><code class="language-rust">fn main(){
+    // 这里指定下类型
+    let list: Vec&lt;_&gt; = (1..5).map(|x| x + 1).collect();
+}
+</code></pre>
+
+<h4 id="elixir">Elixir</h4>
+
+<pre><code>1..5
+    |&gt; Enum.map(&amp;(&amp;1 + 1))
+</code></pre>
+
+<br />
+<br />
+<br />
+<br />
+  </div>
+
+<footer>
+  <hr>
+  <small style="font-size:16px;">
+    &copy; 2018 <a href="https://github.com/YuiFn">Yui.</a>
+    
+  </small>
+</footer>
+</div> 
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+  crossorigin="anonymous"></script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+
+
+
+</body>
+
+</html>
