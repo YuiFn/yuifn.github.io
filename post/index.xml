@@ -17,8 +17,8 @@
       <pubDate>Tue, 20 Nov 2018 13:36:58 +0800</pubDate>
       
       <guid>https://yuifn.github.io/post/hello/</guid>
-      <description> 开篇Higher-Order-Function &amp;ndash; Map 许久不写了,这次重新捡起.作为开篇没有太多内容要说,以Higher-Order-Function中的map函数来做简单的说明. Map是一个接受一个函数并把这个函数作为一个functor应用于每一个原属.如下图 下边看看各种语言的一个大概实现,代码的意思是对一个[1,5]的列表,对其每个元素➕1
-Scala val list = 1 to 5; list.map(_ + 1).toList();  Ocaml let plus = ( + );; (* 这里是为了对此,可以使用List.range 1 6;; *) let list = List.init 5 ~f:(plus 1); list |&amp;gt; List.map ~f: plus |&amp;gt; List.map ~f: (fun fn -&amp;gt; fn 1);;  Rust fn main(){ // 这里指定下类型 let list: Vec&amp;lt;_&amp;gt; = (1..5).map(|x| x + 1).collect(); }  Elixir 1..5 |&amp;gt; Enum.map(&amp;amp;(&amp;amp;1 + 1))  </description>
+      <description>开篇Higher-Order-Function &amp;ndash; Map 许久不写了,这次重新捡起.作为开篇没有太多内容要说,以Higher-Order-Function中的map函数来做简单的说明. Map是一个接受一个函数并把这个函数作为一个functor应用于每一个原属.如下图 下边看看各种语言的一个大概实现,代码的意思是对一个[1,5]的列表,对其每个元素➕1
+Scala val list = 1 to 5; list.map(_ + 1).toList();  Ocaml let plus = ( + );; (* 这里是为了对此,可以使用List.range 1 6;; *) let list = List.init 5 ~f:(plus 1); list |&amp;gt; List.map ~f: plus |&amp;gt; List.map ~f: (fun fn -&amp;gt; fn 1);;  Rust fn main(){ // 这里指定下类型 let list: Vec&amp;lt;_&amp;gt; = (1..5).map(|x| x + 1).collect(); }  Elixir 1..5 |&amp;gt; Enum.map(&amp;amp;(&amp;amp;1 + 1))  #Dart</description>
     </item>
     
   </channel>
