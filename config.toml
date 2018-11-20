@@ -8,3 +8,15 @@ theme = "yinwang"
 	github = "YuiFn"
 	highlight = "xcode"
 	langs  = ["rust", "go", "elixir", "scala", "ocaml", "dart", "haskell"]
+	menus = true
+
+
+
+[[menu.main]]
+	name = "Home"
+	url = "/"
+	weight = 10
+	
+[[menu.main]]
+	name = "Github"
+	url = "https://yuifn.github.io"
