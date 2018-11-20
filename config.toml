@@ -1,0 +1,10 @@
+baseURL = "https://yuifn.github.io"
+languageCode = "en-us"
+title = "Functional |> Concurrent |> Pragmatic |> Fun"
+theme = "yinwang"
+
+[params]
+	author = "Yui"
+	github = "YuiFn"
+	highlight = "xcode"
+	langs  = ["rust", "go", "elixir", "scala", "ocaml", "dart", "haskell"]
