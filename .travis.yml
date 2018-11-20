@@ -1,8 +1,9 @@
-language: go
 dist: xenial
 sudo: true
-go:
-  - "1.11"
+
+# language: go
+# go:
+#   - "1.11"
 
 addons:
  apt:
