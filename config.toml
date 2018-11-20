@@ -8,9 +8,11 @@ theme = "yinwang"
 	github = "YuiFn"
 	highlight = "xcode"
 	langs  = ["rust", "go", "elixir", "scala", "ocaml", "dart", "haskell"]
+	googleAnalytics = "UA-129503268-1"
 	menus = true
 
-
+[permalinks]
+   post = "/:year/:month/:title/"
 
 [[menu.main]]
 	name = "Home"
