@@ -1,14 +1,10 @@
-language: go
-
-go:
-  - "1.8"
 branches:
   only:
     - hugo-source 
 
 install:
 # 安装最新的hugo
-  - go get github.com/spf13/hugo 
+  - sudo apt-get install hugo
 
 script:
 # 运行hugo命令
