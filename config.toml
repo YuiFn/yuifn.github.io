@@ -1,6 +1,6 @@
 baseURL = "https://yuifn.github.io"
 languageCode = "en-us"
-title = "Functional |> Concurrent |> Pragmatic |> Fun"
+title = "Code |> Functional |> Fun"
 theme = "yinwang"
 
 [params]
@@ -8,7 +8,8 @@ theme = "yinwang"
 	github = "YuiFn"
 	highlight = "xcode"
 	langs  = ["rust", "go", "elixir", "scala", "ocaml", "dart", "haskell"]
-	googleAnalytics = "UA-129503268-1"
+	# googleAnalytics = "UA-129503268-1"
+	baiduAnalytics = "5977ef9f1383020b74be56289ba82680"
 	menus = true
 
 [permalinks]
@@ -21,4 +22,4 @@ theme = "yinwang"
 	
 [[menu.main]]
 	name = "Github"
-	url = "https://yuifn.github.io"
+	url = "https://github.com/YuiFn"
