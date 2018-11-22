@@ -21,6 +21,7 @@ install:
 
 script:
   - hugo
+  - cp README.md ./public
 
 deploy:
   provider: pages
