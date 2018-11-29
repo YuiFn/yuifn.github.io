@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta http-equiv="content-language" content="en-us" />
+    
+    <meta name="viewport" content="width=device-width, initial-scale=0.5">
+    
+    
+    <title>Rust Phantom Type</title>
+    <link rel="stylesheet" href="/css/stylesheet.css">
+
+    
+    
+    <link href="https://cdn.bootcss.com/highlight.js/9.13.1/styles/xcode.min.css" rel="stylesheet">
+    
+    <script src="https://cdn.bootcss.com/highlight.js/9.13.1/highlight.min.js"></script>
+    
+     
+    <script src="https://cdn.bootcss.com/highlight.js/9.13.1/languages/rust.min.js"></script>
+     
+    <script src="https://cdn.bootcss.com/highlight.js/9.13.1/languages/go.min.js"></script>
+     
+    <script src="https://cdn.bootcss.com/highlight.js/9.13.1/languages/elixir.min.js"></script>
+     
+    <script src="https://cdn.bootcss.com/highlight.js/9.13.1/languages/scala.min.js"></script>
+     
+    <script src="https://cdn.bootcss.com/highlight.js/9.13.1/languages/ocaml.min.js"></script>
+     
+    <script src="https://cdn.bootcss.com/highlight.js/9.13.1/languages/dart.min.js"></script>
+     
+    <script src="https://cdn.bootcss.com/highlight.js/9.13.1/languages/haskell.min.js"></script>
+    
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/post.css">
+    
+    
+</head>
+
+
+<body>
+    <script>
+        window.addEventListener("resize", resizeThrottler, false);
+
+        var resizeTimeout;
+        function resizeThrottler() {
+        
+        if ( !resizeTimeout ) {
+            resizeTimeout = setTimeout(function() {
+            resizeTimeout = null;
+            actualResizeHandler();
+        
+            
+            }, 66);
+        }
+        }
+        actualResizeHandler()
+        function actualResizeHandler() {
+                if (/mobile/i.test(navigator.userAgent) || /android/i.test(navigator.userAgent))
+                {
+                    document.body.classList.add('mobile');
+                }else{
+                    document.body.classList.remove('mobile');  
+                }
+        }</script>
+    
+
+
+    
+
+
+<div class="inner" style="position:relative;">
+  
+  <div class="side-btn"><a href="/" class="back">Home</a></div>
+  
+<div class="blog-post">
+  <h2>Rust Phantom Type</h2>
+        
+
+<p>在具有高级类型系统的语言里面,有一种类型叫Phantom Type,Rust如此强大的类型系统当然也不再话下.</p>
+
+<p>Phantom Type又名幽灵类型,你或许想起了Java的PhantomReference,嗯&hellip;或许没有,但不管怎么样以Phantom为名的都具有一个共性:
+它们都是对其所拥有的东东进行&rdquo;行为标记&rdquo;在特定的上下文环境执行一些更严格的逻辑或者约束.对于Java可以通过PhantomReference跟踪
+GC或者最后进行一些清理的工作,对于Rust那就更多了后边会讲到.</p>
+
+<p>由于Rust本身一些喜闻乐见的特性(LifeTime,Drop Checker)Phantom Type被赋予了更多的功能(自己挖的抗,含泪也要填完).在Rust中
+Phantom Type对应的实现为PhantomData这是一个Zero-sized type.对于编译后的代码来说，完全没有任何的副作用.
+这也是zero-cost abstractions的一种体现.
+下边列举下它具体的使用场景:</p>
+
+<h4 id="compile-time-type-check">Compile time type check</h4>
+
+<p>编译期的静态类型检测是Phantom Type的一种常见用法,在一些其他语言里面也叫类型标记法,这里它标记的是它所拥有的类型并对这个类型进行约束
+这里列举一个常见的单位运算的例子.在支付系统中经常会遇到不同单位的价格进行计算的问题一不留神就会出错</p>
+
+<pre><code class="language-rust">use std::marker::PhantomData;
+use std::ops::Add;
+
+type USD = f64;
+type CNY = f64;
+
+#[derive(Debug)]
+struct Money&lt;Num&gt;(Num);
+
+impl&lt;Num: Add&lt;Output = Num&gt;&gt; Add for Money&lt;Num&gt; {
+    type Output = Money&lt;Num&gt;;
+    fn add(self, rhs: Money&lt;Num&gt;) -&gt; Money&lt;Num&gt; {
+        Length(self.0 + rhs.0)
+    }
+}
+
+fn main() {
+    let usd = Money(5.0 as USD);
+    let cny = Money(5.0 as CNY);
+    println!(&quot;{:?}&quot;, usd + cny);
+}
+</code></pre>
+
+<p>上边的代码中有一个明显的bug,美元和人民币直接相加了,如果在系统中存在一个含有几十种货币的复杂业务场景中或者在大规模系统下这种
+问题难以发现，在语法的直观上是没有任何的错误.</p>
+
+<p>可不可以通过类型系统本身去做这一部分的约束呢?答案是肯定的也正是Phantom Type的使用场景</p>
+
+<pre><code class="language-rust">use std::marker::PhantomData;
+use std::ops::Add;
+
+mod currency {
+    #[derive(Debug)]
+    pub enum USD {}
+    #[derive(Debug)]
+    pub enum CNY {}
+}
+
+#[derive(Debug)]
+struct Money&lt;Num, P&gt;(Num, PhantomData&lt;P&gt;);
+
+impl&lt;Num: Add&lt;Output = Num&gt;, P&gt; Add for Money&lt;Num, PhantomData&lt;P&gt;&gt; {
+    type Output = Money&lt;Num, PhantomData&lt;P&gt;&gt;;
+    fn add(self, rhs: Money&lt;Num, PhantomData&lt;P&gt;&gt;) -&gt; Money&lt;Num, PhantomData&lt;P&gt;&gt; {
+        Money(self.0 + rhs.0, PhantomData)
+    }
+}
+
+fn main() {
+    let usd: Money&lt;f64, PhantomData&lt;currency::USD&gt;&gt; = Money(5.0, PhantomData);
+    let cny: Money&lt;f64, PhantomData&lt;currency::CNY&gt;&gt; = Money(5.0, PhantomData);
+    println!(&quot;{:?}&quot;, usd + cny); 
+}
+</code></pre>
+
+<p>编译上面那段的代码，编译器如期的给出了错误：</p>
+
+<pre><code>error[E0308]: mismatched types
+   --&gt; main.rs:115:26
+    |
+115 |     println!(&quot;{:?}&quot;, usd + cny);    
+    |                          ^ expected enum `currency::USD`, found enum `currency::CNY`
+    |
+    = note: expected type `Money&lt;_, std::marker::PhantomData&lt;currency::USD&gt;&gt;`
+               found type `Money&lt;_, std::marker::PhantomData&lt;currency::CNY&gt;&gt;`
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0308`.
+</code></pre>
+
+<p>意思是说期待的的是USD,但实质的是给定的是CNY.通过添加phantom type编译器就自动做了类型检测并给出了提示.这是怎么做到的
+当输入5.0$的时候同时输入了两个信息一个是数字5.0另一个是货币的种类$,分割两者来看单独看都不具有意义但结合两者(5.0$)$就赋予了5.0
+class信息改变了它的运算规则.而phantom type在此就起到了这个量纲作用。</p>
+
+<h4 id="unused-lifetime-parameters">Unused lifetime parameters</h4>
+
+<p>在一些unsafe的代码里(FFI,数据结构)时常会遇到在定义struct的时候type或者lifetime和逻辑是有关联的,但却不是struct字段的一部分比如:</p>
+
+<pre><code class="language-rust">struct Iter&lt;'a, T: 'a&gt; {
+    ptr: *const T,
+    end: *const T,
+}
+</code></pre>
+
+<p>Iter的lifetime是 &lsquo;a 也就是不能超过 &lsquo;a 的生命周期,但实质在Iter内部并没有使用&rsquo;a 其lifetime就变成了unbounded.
+Rust中是禁止定义这种unbounded lifetime.这中情况可以用PhantomData来对&rdquo;无用的&rdquo;lifetime做出标记,当然这里的PhantomData
+起到的作用远不如此,它不但把lifetime从unbounded变成了bounded,还提供了静态分析需要的信息(Iter对T的拥有关系)</p>
+
+<pre><code class="language-rust">use std::marker::PhantomData;
+
+struct Iter&lt;'a, T: 'a&gt; {
+    ptr: *const T,
+    end: *const T,
+    _marker: PhantomData&lt;&amp;'a T&gt;,
+}
+</code></pre>
+
+<h4 id="unused-type-parameters">Unused type parameters</h4>
+
+<p>这里和上边的情况类似这次是FFI场景下,Rust也是禁止在struct中定义未使用的类型参数,这种情况用PhantomData进行包裹.</p>
+
+<pre><code class="language-rust">// #![allow(dead_code)]
+// trait ResType { }
+// struct ParamType;
+// mod foreign_lib {
+//      pub fn new(_: usize) -&gt; *mut () { 42 as *mut () }
+//      pub fn do_stuff(_: *mut (), _: usize) {}
+//  }
+// fn convert_params(_: ParamType) -&gt; usize { 42 }
+
+use std::marker::PhantomData;
+use std::mem;
+
+struct ExternalResource&lt;R&gt; {
+   resource_handle: *mut (),
+   resource_type: PhantomData&lt;R&gt;,
+}
+
+impl&lt;R: ResType&gt; ExternalResource&lt;R&gt; {
+    fn new() -&gt; ExternalResource&lt;R&gt; {
+        let size_of_res = mem::size_of::&lt;R&gt;();
+        ExternalResource {
+            resource_handle: foreign_lib::new(size_of_res),
+            resource_type: PhantomData,
+        }
+    }
+
+    fn do_stuff(&amp;self, param: ParamType) {
+        let foreign_params = convert_params(param);
+        foreign_lib::do_stuff(self.resource_handle, foreign_params);
+    }
+}
+</code></pre>
+
+<h4 id="ownership-and-the-drop-check">Ownership and the drop check</h4>
+
+<p>Rust中通过<code>Ownership</code> + <code>Lifetime</code>提供了一些规则来避免像闲空指针这类的内存安全问题但梦想很美好现实很残酷,
+很多时候编译器本身其实分辨不出来到底哪个的<code>Lifetime</code>更长,比如:</p>
+
+<pre><code class="language-rust">let (x, y) = (vec![], vec![]);
+</code></pre>
+
+<p>这种情况下是无法确认x和y到底哪个活得更长.这有啥关系吗?关系大了,这动摇了<code>Ownership</code> + <code>Lifetime</code>的体系根基
+如果处理不好就会出现闲空指针.</p>
+
+<pre><code class="language-rust">struct Inspector&lt;'a&gt;(&amp;'a u8);
+
+impl&lt;'a&gt; Drop for Inspector&lt;'a&gt; {
+    fn drop(&amp;mut self) {
+        // 1. 因为无法确认days和inspector的生命周期到底谁长,如果days先被drop这里就会构成闲空指针
+        println!(&quot;I was only {} days from retirement!&quot;, self.0);
+        // 2. 现在的编译器还没有智能到能看出drop的方法实现即使不使用也不能通过编译
+        //println!(&quot;Just drop!&quot;);
+    }
+}
+
+fn main() {
+    let (inspector, days);
+    days = Box::new(1);
+    inspector = Inspector(&amp;days);
+}
+</code></pre>
+
+<p>针对上门面的问题Rust先后出台了<a href="https://github.com/rust-lang/rfcs/blob/master/text/1238-nonparametric-dropck.md">RFC 1238</a>和
+<a href="https://github.com/rust-lang/rfcs/blob/master/text/1327-dropck-param-eyepatch.md">RFC 1327</a>的RFC.
+简单概括就是</p>
+
+<ol>
+<li>对于一个实现了Drop的范型类型对于它的范型参数必须<strong>严格</strong>的超过它</li>
+<li>通过<code>#[may_dangle]</code>明确指明不会去使用借用的数据</li>
+</ol>
+
+<p>That&rsquo;s All?当然不是,看个例子</p>
+
+<pre><code class="language-rust">struct Vec&lt;T&gt; {
+    data: *const T, // *const for variance!
+    len: usize,
+    cap: usize,
+}
+</code></pre>
+
+<p><code>*const T</code>是Row poiner这时编译器并不会为其附加所有权关系,也就是说<code>Vec</code>和类型<code>T</code>之间没有半毛钱关系
+更别提<code>lifetime</code>约束了(至少在drop checker的视角下是这样).当drop checker路过的时候也不去关心这里面到底是怎么样的
+就有可能导致在drop函数中访问到已经被析构的数据导致悬空指针,当然可以通过PhantomData来解决这个问题.通过添加PhantomData
+明确告诉编译器<code>Vec</code>拥有类型<code>T</code>,在drop<code>Vec</code>的时候顺带的一起drop掉<code>T</code>的实例：</p>
+
+<pre><code class="language-rust">use std::marker;
+
+struct Vec&lt;T&gt; {
+    data: *const T, // *const for covariance!
+    len: usize,
+    cap: usize,
+    _marker: marker::PhantomData&lt;T&gt;,
+}
+</code></pre>
+
+<p>当<code>struct</code>并没有实际拥有类型<code>T</code>的数据时需要使用<code>PhantomData&lt;&amp;'a T&gt;</code> 或者 <code>PhantomData&lt;* const T&gt;</code>来明确指定所有权关系</p>
+
+<h4 id="参考链接">参考链接</h4>
+
+<ol>
+<li><a href="https://doc.rust-lang.org/nomicon/dropck.html">dropck</a></li>
+<li><a href="https://doc.rust-lang.org/nomicon/phantom-data.html#phantomdata">phantom-data</a></li>
+</ol>
+
+<br />
+<br />
+<br />
+<br />
+  </div>
+
+<footer>
+  <hr>
+  <small style="font-size:16px;">
+    &copy; 2018 <a href="https://github.com/YuiFn">Yui.</a>
+    
+  </small>
+</footer>
+</div> 
+
+
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.slim.min.js"></script>
+<script src="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?5977ef9f1383020b74be56289ba82680";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+</body>
+
+</html>

@@ -10,5 +10,23 @@
 	<atom:link href="https://yuifn.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
     
     
+    <item>
+      <title>Rust</title>
+      <link>https://yuifn.github.io/categories/rust/</link>
+      <pubDate>Tue, 27 Nov 2018 21:18:47 +0800</pubDate>
+      
+      <guid>https://yuifn.github.io/categories/rust/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Type System</title>
+      <link>https://yuifn.github.io/categories/type-system/</link>
+      <pubDate>Tue, 27 Nov 2018 21:18:47 +0800</pubDate>
+      
+      <guid>https://yuifn.github.io/categories/type-system/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>
