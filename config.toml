@@ -19,7 +19,10 @@ theme = "yinwang"
 	name = "Home"
 	url = "/"
 	weight = 10
-	
+
 [[menu.main]]
 	name = "Github"
 	url = "https://github.com/YuiFn"
+[[menu.main]]
+	name = "分类"
+	url = "/categories/"
