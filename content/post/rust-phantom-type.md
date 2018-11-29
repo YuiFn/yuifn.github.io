@@ -1,7 +1,7 @@
 ---
 title: "Rust Phantom Type"
 date: 2018-11-27T21:18:47+08:00
-draft: true
+draft: false
 tags: [ "Rust", "Type System"]
 categories: [ "Rust", "Type System" ]
 ---
