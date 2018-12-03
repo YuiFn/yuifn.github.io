@@ -18,7 +18,7 @@
       
       <guid>https://yuifn.github.io/2018/11/rust-phantom-type/</guid>
       <description>在具有高级类型系统的语言里面,有一种类型叫Phantom Type,Rust如此强大的类型系统当然也不再话下.
-Phantom Type又名幽灵类型,你或许想起了Java的PhantomReference,嗯&amp;hellip;或许没有,但不管怎么样以Phantom为名的都具有一个共性: 它们都是对其所拥有的东东进行&amp;rdquo;行为标记&amp;rdquo;在特定的上下文环境执行一些更严格的逻辑或者约束.对于Java可以通过PhantomReference跟踪 GC或者最后进行一些清理的工作,对于Rust那就更多了后边会讲到.
+Phantom Type或叫幽灵类型,你或许想起了Java的PhantomReference,嗯&amp;hellip;或许没有,但不管怎么样以Phantom为名的都具有一个共性: 它们都是对其所拥有的东东进行&amp;rdquo;行为标记&amp;rdquo;在特定的上下文环境执行一些更严格的逻辑或者约束.对于Java可以通过PhantomReference跟踪 GC或者最后进行一些清理的工作,对于Rust那就更多了后边会讲到.
 由于Rust本身一些喜闻乐见的特性(LifeTime,Drop Checker)Phantom Type被赋予了更多的功能(自己挖的抗,含泪也要填完).在Rust中 Phantom Type对应的实现为PhantomData这是一个Zero-sized type.对于编译后的代码来说，完全没有任何的副作用. 这也是zero-cost abstractions的一种体现. 下边列举下它具体的使用场景:
 Compile time type check 编译期的静态类型检测是Phantom Type的一种常见用法,在一些其他语言里面也叫类型标记法,这里它标记的是它所拥有的类型并对这个类型进行约束 这里列举一个常见的单位运算的例子.在支付系统中经常会遇到不同单位的价格进行计算的问题一不留神就会出错
 use std::marker::PhantomData; use std::ops::Add; type USD = f64; type CNY = f64; #[derive(Debug)] struct Money&amp;lt;Num&amp;gt;(Num); impl&amp;lt;Num: Add&amp;lt;Output = Num&amp;gt;&amp;gt; Add for Money&amp;lt;Num&amp;gt; { type Output = Money&amp;lt;Num&amp;gt;; fn add(self, rhs: Money&amp;lt;Num&amp;gt;) -&amp;gt; Money&amp;lt;Num&amp;gt; { Length(self.0 + rhs.0) } } fn main() { let usd = Money(5.0 as USD); let cny = Money(5.</description>
