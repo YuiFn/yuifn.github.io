@@ -7,7 +7,7 @@ categories: [ "Rust", "Type System" ]
 ---
 在具有高级类型系统的语言里面,有一种类型叫Phantom Type,Rust如此强大的类型系统当然也不再话下.
 
-Phantom Type又名幽灵类型,你或许想起了Java的PhantomReference,嗯...或许没有,但不管怎么样以Phantom为名的都具有一个共性:
+Phantom Type或叫幽灵类型,你或许想起了Java的PhantomReference,嗯...或许没有,但不管怎么样以Phantom为名的都具有一个共性:
 它们都是对其所拥有的东东进行"行为标记"在特定的上下文环境执行一些更严格的逻辑或者约束.对于Java可以通过PhantomReference跟踪
 GC或者最后进行一些清理的工作,对于Rust那就更多了后边会讲到.
 
@@ -88,9 +88,9 @@ error: aborting due to previous error
 
 For more information about this error, try `rustc --explain E0308`.
 ```
-意思是说期待的的是USD,但实质的是给定的是CNY.通过添加phantom type编译器就自动做了类型检测并给出了提示.这是怎么做到的
-当输入5.0$的时候同时输入了两个信息一个是数字5.0另一个是货币的种类$,分割两者来看单独看都不具有意义但结合两者(5.0$)$就赋予了5.0
-class信息改变了它的运算规则.而phantom type在此就起到了这个量纲作用。
+意思是说期待的的是USD,但实质的是给定的是CNY.通过添加phantom type编译器就自动做了类型检测并给出了提示.这是怎么做到的呢?
+
+当输入5.0$的时候同时输入了两个信息一个是数字5.0另一个是货币的种类$,分割两者来看单独看都不具有意义但结合两者(5.0$)$就赋予了5.0class信息改变了它的运算规则.而phantom type在此就起到了这个量纲作用。
 
 #### Unused lifetime parameters
 在一些unsafe的代码里(FFI,数据结构)时常会遇到在定义struct的时候type或者lifetime和逻辑是有关联的,但却不是struct字段的一部分比如:
