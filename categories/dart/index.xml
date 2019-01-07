@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Dart on Code |&gt; Functional |&gt; Fun</title>
+    <link>https://yuifn.github.io/categories/dart/</link>
+    <description>Recent content in Dart on Code |&gt; Functional |&gt; Fun</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 03 Dec 2018 12:23:15 +0800</lastBuildDate>
+    
+	<atom:link href="https://yuifn.github.io/categories/dart/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Different Profiles in Flutter apps</title>
+      <link>https://yuifn.github.io/2018/12/different-profiles-in-flutter-apps/</link>
+      <pubDate>Mon, 03 Dec 2018 12:23:15 +0800</pubDate>
+      
+      <guid>https://yuifn.github.io/2018/12/different-profiles-in-flutter-apps/</guid>
+      <description>在日常的开发中需要根据不同的Profile/env来加载对应的配置信息，比如dev，qa， prod等。Flutter怎么实现这个功能呢？ 浏览下文档无果，最后在其examples/catalog的例子中找到了一个可行的方法
+flutter run lib/animated_list.dart flutter run lib/app_bar_bottom.dart flutter run lib/basic_app_bar.dart ...  Flutter生成的main.dart是默认的APP入口文件但可以通过命令修改为其他文件如上，所以只要按照不同的Profile创建不同的main的文件即可，如 main_dev.dart对应着的开发环境。用一个例子说明下
+01 - 生成一个默认的项目 flutter create profiles # 在lib中的结构如下: lib └── main.dart  02 - 分离main.dart中的类为独立的文件 ├── main.dart ├── app.dart └── my_home_page.dart  03 - 添加配置信息 添加一个新类用于存储需要的配置信息
+/// config/app_config.dart import &#39;package:meta/meta.dart&#39;; class AppConfig { final String appName; final String apiBaseUrl; AppConfig({@required this.appName, @required this.apiBaseUrl}): assert(appName!=null), assert(apiBaseUrl!=null); }  那怎么在不同的Widget之间传递配置信息呢？一个直观的做法就是直接创建在不同的环境中创建一个全局的对象，然后直接访问比如
+/// main_dev.dart main(){ final dev = AppConfig( appName: &amp;quot;app - dev&amp;quot;, apiBaseUrl: &amp;quot;https://dev.</description>
+    </item>
+    
+  </channel>
+</rss>
