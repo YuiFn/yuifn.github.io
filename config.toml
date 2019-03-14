@@ -9,7 +9,7 @@ theme = "yinwang"
 	highlight = "xcode"
 	langs  = ["rust", "go", "elixir", "scala", "ocaml", "dart", "haskell"]
 	# googleAnalytics = "UA-129503268-1"
-	baiduAnalytics = "9a7bac334b37e09c28be935b3a82678d"
+	baiduAnalytics = "37b4eec6344fe6048329351e0bff8f31"
 	menus = true
 
 [permalinks]
