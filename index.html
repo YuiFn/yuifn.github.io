@@ -10,13 +10,16 @@
     
     
     <title>Code |&gt; Functional |&gt; Fun</title>
-    <link rel="stylesheet" href="/css/stylesheet.css">
+    
+
 
     
-    <link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-   <link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="https://yuifn.github.iocss/stylesheet.css">
+    <link rel="stylesheet" href="https://yuifn.github.iocss/home.css">
 
-    <link rel="stylesheet" href="/css/home.css">
+    
 
     
     
@@ -47,7 +50,9 @@
                 }else{
                     document.body.classList.remove('mobile');  
                 }
-        }</script>
+    }</script>
+
+    
     
     <nav class="navbar navbar-default navbar-fixed-top" style="opacity: .9" role="navigation">
         <div class="container-fluid">
@@ -61,7 +66,7 @@
                     <span class="big-icon icon-bar"></span>
 
                 </button>
-                <a class="navbar-brand" href="/">Code |&gt; Functional |&gt; Fun</a>
+                <a class="navbar-brand" href="https://yuifn.github.io">Code |&gt; Functional |&gt; Fun</a>
             </div>
 
             <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-1" style="height: auto;">
@@ -69,7 +74,7 @@
                     
                         
                             
-                            <li class="active"><a href="/">Home</a></li>
+                            <li class=""><a href="/">Home</a></li>
                             
                             <li class=""><a href="https://github.com/YuiFn">Github</a></li>
                             
@@ -92,32 +97,41 @@
   <div class="outer">
   <ul class="list-group">
     
+
     <li class="list-group-item title">
       
          
         
         
-          <a href="/2018/12/different-profiles-in-flutter-apps/"><time style="color:black;">2018-12-03</time>  / Different Profiles in Flutter apps </a>
+            
+                <a href="/2018/12/different-profiles-in-flutter-apps/"><time style="color:black;">2018-12-03</time>  / Different Profiles in Flutter apps </a>
+            
         
       
     </li>
     
+
     <li class="list-group-item title">
       
          
         
         
-          <a href="/2018/11/rust-phantom-type/"><time style="color:black;">2018-11-27</time>  / Rust Phantom Type </a>
+            
+                <a href="/2018/11/rust-phantom-type/"><time style="color:black;">2018-11-27</time>  / Rust Phantom Type </a>
+            
         
       
     </li>
     
+
     <li class="list-group-item title">
       
          
         
         
-          <a href="/2018/11/hello/"><time style="color:black;">2018-11-20</time>  / Hello </a>
+            
+                <a href="/2018/11/hello/"><time style="color:black;">2018-11-20</time>  / Hello </a>
+            
         
       
     </li>
@@ -127,7 +141,7 @@
 
 <footer>
   <hr>
-  <small style="font-size:16px;">
+  <small style="font-size:16px;float:right;margin:0 1rem;">
     &copy; 2019 <a href="https://github.com/YuiFn">Yui.</a>
     
   </small>
@@ -135,23 +149,62 @@
 </div> 
 
 
-<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.slim.min.js"></script>
-<script src="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+  crossorigin="anonymous"></script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
 
 
 
 
 <script>
-var _hmt = _hmt || [];
-(function() {
-  var hm = document.createElement("script");
-  hm.src = "https://hm.baidu.com/hm.js?37b4eec6344fe6048329351e0bff8f31";
-  var s = document.getElementsByTagName("script")[0]; 
-  s.parentNode.insertBefore(hm, s);
-})();
+ (function(){
+  var seriesA = document.getElementsByTagName("a");
+  seriesA = Array.from(seriesA).filter(x =>x.getAttribute("data-series"));
+  if(seriesA.length){
+    var nameSeries = {}
+    seriesA.forEach(x =>{
+      var xdata = x.getAttribute("data-series")
+      if(nameSeries[xdata]){
+        nameSeries[xdata].push(x)
+      }else{
+        nameSeries[xdata] = [x]
+      }
+    })
+  }
+
+  function createE(){
+    var detailsArr = [] 
+    var postPosArr = [] 
+    for(let i in nameSeries){
+      var dcreateE = document.createElement("details")
+      var screateE = document.createElement("summary")
+      screateE.textContent = i;
+      var inner = screateE.outerHTML 
+
+      nameSeries[i].forEach(x =>{
+        inner += x.outerHTML
+        x.parentElement.style.display = "none"
+      })
+      postPosArr.push(nameSeries[i][0])
+      dcreateE.innerHTML = inner
+      detailsArr.push(dcreateE)
+    }
+    console.info(postPosArr)
+    console.log(detailsArr[0])
+    postPosArr.forEach(a =>{
+      a.parentElement.style.display = "block"
+      a.outerHTML = detailsArr.shift().outerHTML
+    })
+  }
+  createE()
+ })()
 </script>
 
 
+
+
+    
 
 </body>
 
