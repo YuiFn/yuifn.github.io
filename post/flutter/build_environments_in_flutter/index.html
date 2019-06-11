@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Different Profiles in Flutter apps - Code |&gt; Functional |&gt; Fun</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Yui" /><meta name="description" content="在日常的开发中需要根据不同的Profile/env来加载对应的配置信息，比如dev，qa， prod等。Flutter怎么实现这个功能呢？ 浏览" /><meta name="keywords" content="Flutter build environments , Flutter按照profile加载配置" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.55.6 with even 4.0.0" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/flutter/build_environments_in_flutter/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Different Profiles in Flutter apps" />
+<meta property="og:description" content="在日常的开发中需要根据不同的Profile/env来加载对应的配置信息，比如dev，qa， prod等。Flutter怎么实现这个功能呢？ 浏览" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/flutter/build_environments_in_flutter/" />
+<meta property="article:published_time" content="2018-12-03T12:23:15&#43;08:00"/>
+<meta property="article:modified_time" content="2018-12-03T12:23:15&#43;08:00"/>
+
+<meta itemprop="name" content="Different Profiles in Flutter apps">
+<meta itemprop="description" content="在日常的开发中需要根据不同的Profile/env来加载对应的配置信息，比如dev，qa， prod等。Flutter怎么实现这个功能呢？ 浏览">
+
+
+<meta itemprop="datePublished" content="2018-12-03T12:23:15&#43;08:00" />
+<meta itemprop="dateModified" content="2018-12-03T12:23:15&#43;08:00" />
+<meta itemprop="wordCount" content="1154">
+
+
+
+<meta itemprop="keywords" content="Flutter,Dart," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Different Profiles in Flutter apps"/>
+<meta name="twitter:description" content="在日常的开发中需要根据不同的Profile/env来加载对应的配置信息，比如dev，qa， prod等。Flutter怎么实现这个功能呢？ 浏览"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">YuiFn</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">YuiFn</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Different Profiles in Flutter apps</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2018-12-03 </span>
+        <div class="post-category">
+            <a href="/categories/flutter/"> Flutter </a>
+            <a href="/categories/dart/"> Dart </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#01-生成一个默认的项目">01 - 生成一个默认的项目</a></li>
+<li><a href="#02-分离main-dart中的类为独立的文件">02 - 分离main.dart中的类为独立的文件</a></li>
+<li><a href="#03-添加配置信息">03 - 添加配置信息</a></li>
+<li><a href="#04-运行和打包">04 - 运行和打包</a></li>
+<li><a href="#05-ide集成">05 - IDE集成</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+
+<p>在日常的开发中需要根据不同的Profile/env来加载对应的配置信息，比如dev，qa， prod等。Flutter怎么实现这个功能呢？
+浏览下文档无果，最后在其examples/catalog的例子中找到了一个可行的方法</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">flutter run lib/animated_list.dart
+flutter run lib/app_bar_bottom.dart
+flutter run lib/basic_app_bar.dart
+...</code></pre></td></tr></table>
+</div>
+</div>
+<p>Flutter生成的<strong>main.dart</strong>是默认的APP入口文件但可以通过命令修改为其他文件如上，所以只要按照不同的Profile创建不同的main的文件即可，如
+main_dev.dart对应着的开发环境。用一个例子说明下</p>
+
+<h4 id="01-生成一个默认的项目">01 - 生成一个默认的项目</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">flutter create profiles
+
+<span class="c1"># 在lib中的结构如下:</span>
+lib
+└── main.dart</code></pre></td></tr></table>
+</div>
+</div>
+<h4 id="02-分离main-dart中的类为独立的文件">02 - 分离main.dart中的类为独立的文件</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">├── main.dart
+├── app.dart
+└── my_home_page.dart</code></pre></td></tr></table>
+</div>
+</div>
+<h4 id="03-添加配置信息">03 - 添加配置信息</h4>
+
+<p>添加一个新类用于存储需要的配置信息</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-dart" data-lang="dart"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-dart" data-lang="dart"><span class="c1">/// config/app_config.dart
+</span><span class="c1"></span><span class="k">import</span> <span class="s1">&#39;package:meta/meta.dart&#39;</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">AppConfig</span> <span class="p">{</span>
+  <span class="kd">final</span> <span class="kt">String</span> <span class="n">appName</span><span class="p">;</span>
+  <span class="kd">final</span> <span class="kt">String</span> <span class="n">apiBaseUrl</span><span class="p">;</span>
+
+  <span class="n">AppConfig</span><span class="p">({</span><span class="err">@</span><span class="n">required</span> <span class="k">this</span><span class="p">.</span><span class="n">appName</span><span class="p">,</span> <span class="err">@</span><span class="n">required</span> <span class="k">this</span><span class="p">.</span><span class="n">apiBaseUrl</span><span class="p">})</span><span class="o">:</span>
+      <span class="k">assert</span><span class="p">(</span><span class="n">appName</span><span class="o">!=</span><span class="kc">null</span><span class="p">),</span>
+      <span class="k">assert</span><span class="p">(</span><span class="n">apiBaseUrl</span><span class="o">!=</span><span class="kc">null</span><span class="p">);</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>那怎么在不同的Widget之间传递配置信息呢？一个直观的做法就是直接创建在不同的环境中创建一个全局的对象，然后直接访问比如</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-dart" data-lang="dart"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-dart" data-lang="dart"><span class="c1">/// main_dev.dart
+</span><span class="c1"></span><span class="n">main</span><span class="p">(){</span>
+    <span class="kd">final</span> <span class="n">dev</span> <span class="o">=</span> <span class="n">AppConfig</span><span class="p">(</span>
+        <span class="nl">appName:</span> <span class="s2">&#34;app - dev&#34;</span><span class="p">,</span>
+        <span class="nl">apiBaseUrl:</span> <span class="s2">&#34;https://dev.app&#34;</span><span class="p">,</span>
+    <span class="p">);</span>
+    <span class="n">AppConfig</span><span class="p">.</span><span class="n">profile</span> <span class="o">=</span> <span class="n">dev</span><span class="p">;</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这种方式当然是可行而且简单明了，但在Flutter中倡导一切都是Widget，可不可以通过Widget的方式去传递呢。答案是可以的，Flutter提供了名为<strong>InheritedWidget</strong>的类,它提供了在Widget Tree中获取最近实例的能力。在一些常见的设计模式中比如BLOC模式中也正常使用。</p>
+
+<p>用<strong>InheritedWidget</strong>对app_config.dart进行改造，并提供一个of的静态方法来获取当前的配置</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-dart" data-lang="dart"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-dart" data-lang="dart"><span class="c1">/// config/app_config.dart
+</span><span class="c1"></span><span class="k">import</span> <span class="s1">&#39;package:flutter/material.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span> <span class="s1">&#39;package:meta/meta.dart&#39;</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">AppConfig</span> <span class="kd">extends</span> <span class="n">InheritedWidget</span> <span class="p">{</span>
+  <span class="kd">final</span> <span class="kt">String</span> <span class="n">appName</span><span class="p">;</span>
+  <span class="kd">final</span> <span class="kt">String</span> <span class="n">apiBaseUrl</span><span class="p">;</span>
+  <span class="kd">final</span> <span class="n">Widget</span> <span class="n">child</span><span class="p">;</span>
+
+  <span class="n">AppConfig</span><span class="p">({</span>
+    <span class="err">@</span><span class="n">required</span> <span class="k">this</span><span class="p">.</span><span class="n">appName</span><span class="p">,</span>
+    <span class="err">@</span><span class="n">required</span> <span class="k">this</span><span class="p">.</span><span class="n">apiBaseUrl</span><span class="p">,</span>
+    <span class="err">@</span><span class="n">required</span> <span class="k">this</span><span class="p">.</span><span class="n">child</span><span class="p">,</span>
+  <span class="p">})</span>  <span class="o">:</span> <span class="k">assert</span><span class="p">(</span><span class="n">appName</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">),</span>
+        <span class="k">assert</span><span class="p">(</span><span class="n">apiBaseUrl</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">),</span>
+        <span class="k">assert</span><span class="p">(</span><span class="n">child</span> <span class="o">!=</span> <span class="kc">null</span><span class="p">),</span>
+        <span class="k">super</span><span class="p">(</span><span class="nl">child:</span> <span class="n">child</span><span class="p">);</span>
+
+  <span class="err">@</span><span class="n">override</span>
+  <span class="kt">bool</span> <span class="n">updateShouldNotify</span><span class="p">(</span><span class="n">InheritedWidget</span> <span class="n">oldWidget</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="kc">false</span><span class="p">;</span> <span class="c1">// 这里不需要更新
+</span><span class="c1"></span>
+  <span class="kd">static</span> <span class="n">AppConfig</span> <span class="n">of</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">context</span><span class="p">.</span><span class="n">inheritFromWidgetOfExactType</span><span class="p">(</span><span class="n">AppConfig</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>然后就可以在app.dart中使用了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-dart" data-lang="dart"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-dart" data-lang="dart"><span class="c1">/// main_dev.dart
+</span><span class="c1"></span><span class="k">import</span> <span class="s1">&#39;package:flutter/material.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span> <span class="s1">&#39;package:profiles/app.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span> <span class="s1">&#39;package:profiles/config/app_config.dart&#39;</span><span class="p">;</span>
+
+<span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">final</span> <span class="n">devApp</span> <span class="o">=</span> <span class="n">AppConfig</span><span class="p">(</span>
+    <span class="nl">appName:</span> <span class="s1">&#39;app - dev&#39;</span><span class="p">,</span>
+    <span class="nl">apiBaseUrl:</span> <span class="s2">&#34;https://dev.app&#34;</span><span class="p">,</span>
+    <span class="nl">child:</span> <span class="n">MyApp</span><span class="p">(),</span>
+  <span class="p">);</span>
+  <span class="n">runApp</span><span class="p">(</span><span class="n">devApp</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">/// main_prod.dart
+</span><span class="c1"></span><span class="k">import</span> <span class="s1">&#39;package:flutter/material.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span> <span class="s1">&#39;package:profiles/app.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span> <span class="s1">&#39;package:profiles/config/app_config.dart&#39;</span><span class="p">;</span>
+
+<span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="kd">final</span> <span class="n">devApp</span> <span class="o">=</span> <span class="n">AppConfig</span><span class="p">(</span>
+    <span class="nl">appName:</span> <span class="s1">&#39;app - prod&#39;</span><span class="p">,</span>
+    <span class="nl">apiBaseUrl:</span> <span class="s2">&#34;https://prod.app&#34;</span><span class="p">,</span>
+    <span class="nl">child:</span> <span class="n">MyApp</span><span class="p">(),</span>
+  <span class="p">);</span>
+  <span class="n">runApp</span><span class="p">(</span><span class="n">devApp</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">/// app.dart
+</span><span class="c1"></span><span class="k">import</span> <span class="s1">&#39;package:flutter/material.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span> <span class="s1">&#39;package:profiles/config/app_config.dart&#39;</span><span class="p">;</span>
+<span class="k">import</span> <span class="s1">&#39;package:profiles/my_home_page.dart&#39;</span><span class="p">;</span>
+
+<span class="kd">class</span> <span class="nc">MyApp</span> <span class="kd">extends</span> <span class="n">StatelessWidget</span> <span class="p">{</span>
+  <span class="err">@</span><span class="n">override</span>
+  <span class="n">Widget</span> <span class="n">build</span><span class="p">(</span><span class="n">BuildContext</span> <span class="n">context</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 获取对应的配置信息
+</span><span class="c1"></span>    <span class="kd">final</span> <span class="n">config</span> <span class="o">=</span> <span class="n">AppConfig</span><span class="p">.</span><span class="n">of</span><span class="p">(</span><span class="n">context</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">MaterialApp</span><span class="p">(</span>
+      <span class="nl">title:</span> <span class="n">config</span><span class="p">.</span><span class="n">appName</span><span class="p">,</span>
+      <span class="nl">theme:</span> <span class="n">ThemeData</span><span class="p">(</span>
+        <span class="nl">primarySwatch:</span> <span class="n">Colors</span><span class="p">.</span><span class="n">blue</span><span class="p">,</span>
+      <span class="p">),</span>
+      <span class="nl">home:</span> <span class="n">MyHomePage</span><span class="p">(</span><span class="nl">title:</span> <span class="n">config</span><span class="p">.</span><span class="n">apiBaseUrl</span><span class="p">),</span>
+    <span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>lib的目录结构:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell">.
+├── app.dart
+├── config
+│   └── app_config.dart
+├── main.dart
+├── main_dev.dart
+├── main_pord.dart
+└── my_home_page.dart</code></pre></td></tr></table>
+</div>
+</div>
+<h4 id="04-运行和打包">04 - 运行和打包</h4>
+
+<p>可以通过flutter的命令来确定当前运行的是哪个Profile</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># 开发环境</span>
+flutter run -t lib/main_dev.dart
+<span class="c1"># 正是环境</span>
+flutter run -t lib/main_prod.dart
+
+<span class="c1"># android 打包</span>
+flutter build apk -t lib/main_dev.dart
+<span class="c1"># ios 打包</span>
+flutter build ios -t lib/main_dev.dart</code></pre></td></tr></table>
+</div>
+</div>
+<h4 id="05-ide集成">05 - IDE集成</h4>
+
+<p>这里保留了原来的main.dart作为默认的口(当不指定具体的一个Profile时),</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-dart" data-lang="dart"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-dart" data-lang="dart"><span class="k">import</span> <span class="s1">&#39;main_dev.dart&#39;</span> <span class="k">as</span> <span class="n">dev</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="o">=&gt;</span> <span class="n">dev</span><span class="p">.</span><span class="n">main</span><span class="p">();</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>当然也可以通过IDE相关的配置，来使用具体的入口文件，比如在IDEA中可以通过配置对应的config,重新指定一个文件
+<img src="/imgs/flutter-config.png" alt="map" /></p>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">Yui</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2018-12-03
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/flutter/">Flutter</a>
+          <a href="/tags/dart/">Dart</a>
+          </div>
+      <nav class="post-nav">
+        
+        <a class="next" href="/post/rust/rust-phantom-type/">
+            <span class="next-text nav-default">Rust Phantom Type</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://github.com/YuiFn" class="iconfont icon-github" title="github"></a>
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Yui</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?37b4eec6344fe6048329351e0bff8f31";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+</html>

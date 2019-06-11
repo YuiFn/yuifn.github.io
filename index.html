@@ -1,211 +1,248 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="zh-cn">
 <head>
-	<meta name="generator" content="Hugo 0.54.0" />
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <meta http-equiv="content-language" content="en-us" />
-    
-    <meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=1, user-scalable=no">
-    
-    
-    <title>Code |&gt; Functional |&gt; Fun</title>
-    
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Code |&gt; Functional |&gt; Fun</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
 
 
-    
-    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="https://yuifn.github.iocss/stylesheet.css">
-    <link rel="stylesheet" href="https://yuifn.github.iocss/home.css">
+<meta name="author" content="Yui" /><meta name="description" content="Code |&gt; Functional |&gt; Fun" /><meta name="keywords" content="Rust, Java, Elixir" />
 
-    
 
-    
-    
+
+
+
+
+<meta name="generator" content="Hugo 0.55.6 with even 4.0.0" />
+
+
+<link rel="canonical" href="http://localhost:1313/" />
+  <link href="http://localhost:1313/index.xml" rel="alternate" type="application/rss+xml" title="Code |&gt; Functional |&gt; Fun" />
+  <link href="http://localhost:1313/index.xml" rel="feed" type="application/rss+xml" title="Code |&gt; Functional |&gt; Fun" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Code |&gt; Functional |&gt; Fun" />
+<meta property="og:description" content="Code |&gt; Functional |&gt; Fun" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="http://localhost:1313/" />
+
+<meta property="og:updated_time" content="2018-12-03T12:23:15&#43;08:00"/>
+
+<meta itemprop="name" content="Code |&gt; Functional |&gt; Fun">
+<meta itemprop="description" content="Code |&gt; Functional |&gt; Fun">
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Code |&gt; Functional |&gt; Fun"/>
+<meta name="twitter:description" content="Code |&gt; Functional |&gt; Fun"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
 </head>
-
-
 <body>
-    <script>
-        window.addEventListener("resize", resizeThrottler, false);
-
-        var resizeTimeout;
-        function resizeThrottler() {
-        
-        if ( !resizeTimeout ) {
-            resizeTimeout = setTimeout(function() {
-            resizeTimeout = null;
-            actualResizeHandler();
-        
-            
-            }, 66);
-        }
-        }
-        actualResizeHandler()
-        function actualResizeHandler() {
-                if (/mobile/i.test(navigator.userAgent) || /android/i.test(navigator.userAgent))
-                {
-                    document.body.classList.add('mobile');
-                }else{
-                    document.body.classList.remove('mobile');  
-                }
-    }</script>
-
-    
-    
-    <nav class="navbar navbar-default navbar-fixed-top" style="opacity: .9" role="navigation">
-        <div class="container-fluid">
-            
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="big-icon icon-bar"></span>
-                    <span class="big-icon icon-bar"></span>
-                    <span class="big-icon icon-bar"></span>
-
-                </button>
-                <a class="navbar-brand" href="https://yuifn.github.io">Code |&gt; Functional |&gt; Fun</a>
-            </div>
-
-            <div class="navbar-collapse collapse" id="bs-example-navbar-collapse-1" style="height: auto;">
-                <ul class="nav navbar-nav navbar-right">
-                    
-                        
-                            
-                            <li class=""><a href="/">Home</a></li>
-                            
-                            <li class=""><a href="https://github.com/YuiFn">Github</a></li>
-                            
-                            <li class=""><a href="/categories/">分类</a></li>
-                            
-                        
-                    
-                </ul>
-            </div>
-        </div>
-    </nav>
-    
-
-
-    
-    
-    
-
-
-  <div class="outer">
-  <ul class="list-group">
-    
-
-    <li class="list-group-item title">
-      
-         
-        
-        
-            
-                <a href="/2018/12/different-profiles-in-flutter-apps/"><time style="color:black;">2018-12-03</time>  / Different Profiles in Flutter apps </a>
-            
-        
-      
-    </li>
-    
-
-    <li class="list-group-item title">
-      
-         
-        
-        
-            
-                <a href="/2018/11/rust-phantom-type/"><time style="color:black;">2018-11-27</time>  / Rust Phantom Type </a>
-            
-        
-      
-    </li>
-    
-
-    <li class="list-group-item title">
-      
-         
-        
-        
-            
-                <a href="/2018/11/hello/"><time style="color:black;">2018-11-20</time>  / Hello </a>
-            
-        
-      
-    </li>
-    
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">YuiFn</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
   </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">YuiFn</a>
+</div>
 
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
 
-<footer>
-  <hr>
-  <small style="font-size:16px;float:right;margin:0 1rem;">
-    &copy; 2019 <a href="https://github.com/YuiFn">Yui.</a>
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <section id="posts" class="posts">
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/flutter/build_environments_in_flutter/">Different Profiles in Flutter apps</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2018-12-03 </span>
+      <div class="post-category">
+          <a href="/categories/flutter/"> Flutter </a>
+          <a href="/categories/dart/"> Dart </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      在日常的开发中需要根据不同的Profile/env来加载对应的配置信息，比如dev，qa， prod等。Flutter怎么实现这个功能呢？ 浏览
+    </div>
+    <div class="read-more">
+      <a href="/post/flutter/build_environments_in_flutter/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/rust/rust-phantom-type/">Rust Phantom Type</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2018-11-27 </span>
+      <div class="post-category">
+          <a href="/categories/rust/"> Rust </a>
+          <a href="/categories/type-system/"> Type System </a>
+          </div>
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      在具有高级类型系统的语言里面,有一种类型叫Phantom Type,Rust如此强大的类型系统当然也不再话下. Phantom Type或叫幽灵类型,你或许想
+    </div>
+    <div class="read-more">
+      <a href="/post/rust/rust-phantom-type/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    <article class="post">
+  <header class="post-header">
+    <h1 class="post-title"><a class="post-link" href="/post/hello/">Hello</a></h1>
+    <div class="post-meta">
+      <span class="post-time"> 2018-11-20 </span>
+      
+    </div>
+  </header>
+  
+  <div class="post-content">
+    <div class="post-summary">
+      开篇Higher-Order-Function &ndash; Map 许久不写了,这次重新捡起.作为开篇没有太多内容要说,以Higher-Order-Funct
+    </div>
+    <div class="read-more">
+      <a href="/post/hello/" class="read-more-link">阅读更多</a>
+    </div>
+  </div>
+</article>
+
+    </section>
+  
+  <nav class="pagination">
     
-  </small>
-</footer>
-</div> 
+    
+  </nav>
+        </div>
+        
 
+      </div>
+    </main>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-  crossorigin="anonymous"></script>
-<script src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://github.com/YuiFn" class="iconfont icon-github" title="github"></a>
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
 
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
 
+  
 
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Yui</span>
+  </span>
+</div>
+    </footer>
 
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
 
-<script>
- (function(){
-  var seriesA = document.getElementsByTagName("a");
-  seriesA = Array.from(seriesA).filter(x =>x.getAttribute("data-series"));
-  if(seriesA.length){
-    var nameSeries = {}
-    seriesA.forEach(x =>{
-      var xdata = x.getAttribute("data-series")
-      if(nameSeries[xdata]){
-        nameSeries[xdata].push(x)
-      }else{
-        nameSeries[xdata] = [x]
-      }
-    })
-  }
-
-  function createE(){
-    var detailsArr = [] 
-    var postPosArr = [] 
-    for(let i in nameSeries){
-      var dcreateE = document.createElement("details")
-      var screateE = document.createElement("summary")
-      screateE.textContent = i;
-      var inner = screateE.outerHTML 
-
-      nameSeries[i].forEach(x =>{
-        inner += x.outerHTML
-        x.parentElement.style.display = "none"
-      })
-      postPosArr.push(nameSeries[i][0])
-      dcreateE.innerHTML = inner
-      detailsArr.push(dcreateE)
-    }
-    console.info(postPosArr)
-    console.log(detailsArr[0])
-    postPosArr.forEach(a =>{
-      a.parentElement.style.display = "block"
-      a.outerHTML = detailsArr.shift().outerHTML
-    })
-  }
-  createE()
- })()
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?37b4eec6344fe6048329351e0bff8f31";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
 </script>
 
 
 
 
-    
+
 
 </body>
-
 </html>

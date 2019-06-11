@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Rust Phantom Type - Code |&gt; Functional |&gt; Fun</title>
+  <meta name="renderer" content="webkit" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+<meta name="author" content="Yui" /><meta name="description" content="在具有高级类型系统的语言里面,有一种类型叫Phantom Type,Rust如此强大的类型系统当然也不再话下. Phantom Type或叫幽灵类型,你或许想" /><meta name="keywords" content="Rust, Java, Elixir" />
+
+
+
+
+
+
+<meta name="generator" content="Hugo 0.55.6 with even 4.0.0" />
+
+
+<link rel="canonical" href="http://localhost:1313/post/rust/rust-phantom-type/" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+
+<link href="/dist/even.c2a46f00.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css" integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin="anonymous">
+
+
+<meta property="og:title" content="Rust Phantom Type" />
+<meta property="og:description" content="在具有高级类型系统的语言里面,有一种类型叫Phantom Type,Rust如此强大的类型系统当然也不再话下. Phantom Type或叫幽灵类型,你或许想" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://localhost:1313/post/rust/rust-phantom-type/" />
+<meta property="article:published_time" content="2018-11-27T21:18:47&#43;08:00"/>
+<meta property="article:modified_time" content="2018-11-27T21:18:47&#43;08:00"/>
+
+<meta itemprop="name" content="Rust Phantom Type">
+<meta itemprop="description" content="在具有高级类型系统的语言里面,有一种类型叫Phantom Type,Rust如此强大的类型系统当然也不再话下. Phantom Type或叫幽灵类型,你或许想">
+
+
+<meta itemprop="datePublished" content="2018-11-27T21:18:47&#43;08:00" />
+<meta itemprop="dateModified" content="2018-11-27T21:18:47&#43;08:00" />
+<meta itemprop="wordCount" content="2278">
+
+
+
+<meta itemprop="keywords" content="Rust,Type System," />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Rust Phantom Type"/>
+<meta name="twitter:description" content="在具有高级类型系统的语言里面,有一种类型叫Phantom Type,Rust如此强大的类型系统当然也不再话下. Phantom Type或叫幽灵类型,你或许想"/>
+
+<!--[if lte IE 9]>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js"></script>
+<![endif]-->
+
+<!--[if lt IE 9]>
+  <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+<![endif]-->
+
+</head>
+<body>
+  <div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/" class="logo">YuiFn</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    <a href="/">
+        <li class="mobile-menu-item">Home</li>
+      </a><a href="/post/">
+        <li class="mobile-menu-item">Archives</li>
+      </a><a href="/tags/">
+        <li class="mobile-menu-item">Tags</li>
+      </a><a href="/categories/">
+        <li class="mobile-menu-item">Categories</li>
+      </a>
+  </ul>
+</nav>
+  <div class="container" id="mobile-panel">
+    <header id="header" class="header">
+        <div class="logo-wrapper">
+  <a href="/" class="logo">YuiFn</a>
+</div>
+
+<nav class="site-navbar">
+  <ul id="menu" class="menu">
+    <li class="menu-item">
+        <a class="menu-item-link" href="/">Home</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/post/">Archives</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/tags/">Tags</a>
+      </li><li class="menu-item">
+        <a class="menu-item-link" href="/categories/">Categories</a>
+      </li>
+  </ul>
+</nav>
+    </header>
+
+    <main id="main" class="main">
+      <div class="content-wrapper">
+        <div id="content" class="content">
+          <article class="post">
+    
+    <header class="post-header">
+      <h1 class="post-title">Rust Phantom Type</h1>
+
+      <div class="post-meta">
+        <span class="post-time"> 2018-11-27 </span>
+        <div class="post-category">
+            <a href="/categories/rust/"> Rust </a>
+            <a href="/categories/type-system/"> Type System </a>
+            </div>
+        
+      </div>
+    </header>
+
+    <div class="post-toc" id="post-toc">
+  <h2 class="post-toc-title">文章目录</h2>
+  <div class="post-toc-content always-active">
+    <nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#compile-time-type-check">Compile time type check</a></li>
+<li><a href="#unused-lifetime-parameters">Unused lifetime parameters</a></li>
+<li><a href="#unused-type-parameters">Unused type parameters</a></li>
+<li><a href="#ownership-and-the-drop-check">Ownership and the drop check</a></li>
+<li><a href="#参考链接">参考链接</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </div>
+</div>
+    <div class="post-content">
+      
+
+<p>在具有高级类型系统的语言里面,有一种类型叫Phantom Type,Rust如此强大的类型系统当然也不再话下.</p>
+
+<p>Phantom Type或叫幽灵类型,你或许想起了Java的PhantomReference,嗯&hellip;或许没有,但不管怎么样以Phantom为名的都具有一个共性:
+它们都是对其所拥有的东东进行&rdquo;行为标记&rdquo;在特定的上下文环境执行一些更严格的逻辑或者约束.对于Java可以通过PhantomReference跟踪
+GC或者最后进行一些清理的工作,对于Rust那就更多了后边会讲到.</p>
+
+<p>由于Rust本身一些喜闻乐见的特性(LifeTime,Drop Checker)Phantom Type被赋予了更多的功能(自己挖的抗,含泪也要填完).在Rust中
+Phantom Type对应的实现为PhantomData这是一个Zero-sized type.对于编译后的代码来说，完全没有任何的副作用.
+这也是zero-cost abstractions的一种体现.
+下边列举下它具体的使用场景:</p>
+
+<h4 id="compile-time-type-check">Compile time type check</h4>
+
+<p>编译期的静态类型检测是Phantom Type的一种常见用法,在一些其他语言里面也叫类型标记法,这里它标记的是它所拥有的类型并对这个类型进行约束
+这里列举一个常见的单位运算的例子.在支付系统中经常会遇到不同单位的价格进行计算的问题一不留神就会出错</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-rust" data-lang="rust"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">marker</span>::<span class="n">PhantomData</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">ops</span>::<span class="n">Add</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">type</span> <span class="nc">USD</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">f64</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="k">type</span> <span class="nc">CNY</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">f64</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="cp">#[derive(Debug)]</span><span class="w">
+</span><span class="w"></span><span class="k">struct</span> <span class="nc">Money</span><span class="o">&lt;</span><span class="n">Num</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Num</span><span class="p">);</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">impl</span><span class="o">&lt;</span><span class="n">Num</span>: <span class="nc">Add</span><span class="o">&lt;</span><span class="n">Output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Num</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">Add</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Money</span><span class="o">&lt;</span><span class="n">Num</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="k">type</span> <span class="nc">Output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Money</span><span class="o">&lt;</span><span class="n">Num</span><span class="o">&gt;</span><span class="p">;</span><span class="w">
+</span><span class="w">    </span><span class="k">fn</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">rhs</span>: <span class="nc">Money</span><span class="o">&lt;</span><span class="n">Num</span><span class="o">&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Money</span><span class="o">&lt;</span><span class="n">Num</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="n">Length</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="mi">0</span><span class="p">)</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">usd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Money</span><span class="p">(</span><span class="mf">5.0</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">USD</span><span class="p">);</span><span class="w">
+</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">cny</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Money</span><span class="p">(</span><span class="mf">5.0</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">CNY</span><span class="p">);</span><span class="w">
+</span><span class="w">    </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;{:?}&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">usd</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">cny</span><span class="p">);</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>上边的代码中有一个明显的bug,美元和人民币直接相加了,如果在系统中存在一个含有几十种货币的复杂业务场景中或者在大规模系统下这种
+问题难以发现，在语法的直观上是没有任何的错误.</p>
+
+<p>可不可以通过类型系统本身去做这一部分的约束呢?答案是肯定的也正是Phantom Type的使用场景</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-rust" data-lang="rust"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">marker</span>::<span class="n">PhantomData</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">ops</span>::<span class="n">Add</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">mod</span> <span class="nn">currency</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="cp">#[derive(Debug)]</span><span class="w">
+</span><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">USD</span><span class="w"> </span><span class="p">{}</span><span class="w">
+</span><span class="w">    </span><span class="cp">#[derive(Debug)]</span><span class="w">
+</span><span class="w">    </span><span class="k">pub</span><span class="w"> </span><span class="k">enum</span> <span class="nc">CNY</span><span class="w"> </span><span class="p">{}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="cp">#[derive(Debug)]</span><span class="w">
+</span><span class="w"></span><span class="k">struct</span> <span class="nc">Money</span><span class="o">&lt;</span><span class="n">Num</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Num</span><span class="p">,</span><span class="w"> </span><span class="n">PhantomData</span><span class="o">&lt;</span><span class="n">P</span><span class="o">&gt;</span><span class="p">);</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">impl</span><span class="o">&lt;</span><span class="n">Num</span>: <span class="nc">Add</span><span class="o">&lt;</span><span class="n">Output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Num</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">P</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Add</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Money</span><span class="o">&lt;</span><span class="n">Num</span><span class="p">,</span><span class="w"> </span><span class="n">PhantomData</span><span class="o">&lt;</span><span class="n">P</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="k">type</span> <span class="nc">Output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Money</span><span class="o">&lt;</span><span class="n">Num</span><span class="p">,</span><span class="w"> </span><span class="n">PhantomData</span><span class="o">&lt;</span><span class="n">P</span><span class="o">&gt;&gt;</span><span class="p">;</span><span class="w">
+</span><span class="w">    </span><span class="k">fn</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">rhs</span>: <span class="nc">Money</span><span class="o">&lt;</span><span class="n">Num</span><span class="p">,</span><span class="w"> </span><span class="n">PhantomData</span><span class="o">&lt;</span><span class="n">P</span><span class="o">&gt;&gt;</span><span class="p">)</span><span class="w"> </span>-&gt; <span class="nc">Money</span><span class="o">&lt;</span><span class="n">Num</span><span class="p">,</span><span class="w"> </span><span class="n">PhantomData</span><span class="o">&lt;</span><span class="n">P</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="n">Money</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">rhs</span><span class="p">.</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">PhantomData</span><span class="p">)</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">usd</span>: <span class="nc">Money</span><span class="o">&lt;</span><span class="kt">f64</span><span class="p">,</span><span class="w"> </span><span class="n">PhantomData</span><span class="o">&lt;</span><span class="n">currency</span>::<span class="n">USD</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Money</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span><span class="w"> </span><span class="n">PhantomData</span><span class="p">);</span><span class="w">
+</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="n">cny</span>: <span class="nc">Money</span><span class="o">&lt;</span><span class="kt">f64</span><span class="p">,</span><span class="w"> </span><span class="n">PhantomData</span><span class="o">&lt;</span><span class="n">currency</span>::<span class="n">CNY</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Money</span><span class="p">(</span><span class="mf">5.0</span><span class="p">,</span><span class="w"> </span><span class="n">PhantomData</span><span class="p">);</span><span class="w">
+</span><span class="w">    </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;{:?}&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">usd</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">cny</span><span class="p">);</span><span class="w"> 
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>编译上面那段的代码，编译器如期的给出了错误：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></pre></td>
+<td class="lntd">
+<pre class="chroma">error[E0308]: mismatched types
+   --&gt; main.rs:115:26
+    |
+115 |     println!(&#34;{:?}&#34;, usd + cny);    
+    |                          ^ expected enum `currency::USD`, found enum `currency::CNY`
+    |
+    = note: expected type `Money&lt;_, std::marker::PhantomData&lt;currency::USD&gt;&gt;`
+               found type `Money&lt;_, std::marker::PhantomData&lt;currency::CNY&gt;&gt;`
+
+error: aborting due to previous error
+
+For more information about this error, try `rustc --explain E0308`.</pre></td></tr></table>
+</div>
+</div>
+<p>意思是说期待的的是USD,但实质的是给定的是CNY.通过添加phantom type编译器就自动做了类型检测并给出了提示.这是怎么做到的呢?</p>
+
+<p>当输入5.0$的时候同时输入了两个信息一个是数字5.0另一个是货币的种类$,分割两者来看单独看都不具有意义但结合两者(5.0$)$就赋予了5.0class信息改变了它的运算规则.而phantom type在此就起到了这个量纲作用。</p>
+
+<h4 id="unused-lifetime-parameters">Unused lifetime parameters</h4>
+
+<p>在一些unsafe的代码里(FFI,数据结构)时常会遇到在定义struct的时候type或者lifetime和逻辑是有关联的,但却不是struct字段的一部分比如:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-rust" data-lang="rust"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">struct</span> <span class="nc">Iter</span><span class="o">&lt;</span><span class="na">&#39;a</span><span class="p">,</span><span class="w"> </span><span class="n">T</span>: <span class="na">&#39;a</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="n">ptr</span>: <span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="n">end</span>: <span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>Iter的lifetime是 &lsquo;a 也就是不能超过 &lsquo;a 的生命周期,但实质在Iter内部并没有使用&rsquo;a 其lifetime就变成了unbounded.
+Rust中是禁止定义这种unbounded lifetime.这中情况可以用PhantomData来对&rdquo;无用的&rdquo;lifetime做出标记,当然这里的PhantomData
+起到的作用远不如此,它不但把lifetime从unbounded变成了bounded,还提供了静态分析需要的信息(Iter对T的拥有关系)</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-rust" data-lang="rust"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">marker</span>::<span class="n">PhantomData</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">struct</span> <span class="nc">Iter</span><span class="o">&lt;</span><span class="na">&#39;a</span><span class="p">,</span><span class="w"> </span><span class="n">T</span>: <span class="na">&#39;a</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="n">ptr</span>: <span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="n">end</span>: <span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="n">_marker</span>: <span class="nc">PhantomData</span><span class="o">&lt;&amp;</span><span class="na">&#39;a</span><span class="w"> </span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div>
+<h4 id="unused-type-parameters">Unused type parameters</h4>
+
+<p>这里和上边的情况类似这次是FFI场景下,Rust也是禁止在struct中定义未使用的类型参数,这种情况用PhantomData进行包裹.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-rust" data-lang="rust"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-rust" data-lang="rust"><span class="c1">// #![allow(dead_code)]
+</span><span class="c1">// trait ResType { }
+</span><span class="c1">// struct ParamType;
+</span><span class="c1">// mod foreign_lib {
+</span><span class="c1">//      pub fn new(_: usize) -&gt; *mut () { 42 as *mut () }
+</span><span class="c1">//      pub fn do_stuff(_: *mut (), _: usize) {}
+</span><span class="c1">//  }
+</span><span class="c1">// fn convert_params(_: ParamType) -&gt; usize { 42 }
+</span><span class="c1"></span><span class="w">
+</span><span class="w"></span><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">marker</span>::<span class="n">PhantomData</span><span class="p">;</span><span class="w">
+</span><span class="w"></span><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">mem</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">struct</span> <span class="nc">ExternalResource</span><span class="o">&lt;</span><span class="n">R</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">   </span><span class="n">resource_handle</span>: <span class="o">*</span><span class="k">mut</span><span class="w"> </span><span class="p">(),</span><span class="w">
+</span><span class="w">   </span><span class="n">resource_type</span>: <span class="nc">PhantomData</span><span class="o">&lt;</span><span class="n">R</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">impl</span><span class="o">&lt;</span><span class="n">R</span>: <span class="nc">ResType</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ExternalResource</span><span class="o">&lt;</span><span class="n">R</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="k">fn</span> <span class="nf">new</span><span class="p">()</span><span class="w"> </span>-&gt; <span class="nc">ExternalResource</span><span class="o">&lt;</span><span class="n">R</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">size_of_res</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">mem</span>::<span class="n">size_of</span>::<span class="o">&lt;</span><span class="n">R</span><span class="o">&gt;</span><span class="p">();</span><span class="w">
+</span><span class="w">        </span><span class="n">ExternalResource</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">            </span><span class="n">resource_handle</span>: <span class="nc">foreign_lib</span>::<span class="n">new</span><span class="p">(</span><span class="n">size_of_res</span><span class="p">),</span><span class="w">
+</span><span class="w">            </span><span class="n">resource_type</span>: <span class="nc">PhantomData</span><span class="p">,</span><span class="w">
+</span><span class="w">        </span><span class="p">}</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w">    </span><span class="k">fn</span> <span class="nf">do_stuff</span><span class="p">(</span><span class="o">&amp;</span><span class="bp">self</span><span class="p">,</span><span class="w"> </span><span class="n">param</span>: <span class="nc">ParamType</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="kd">let</span><span class="w"> </span><span class="n">foreign_params</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">convert_params</span><span class="p">(</span><span class="n">param</span><span class="p">);</span><span class="w">
+</span><span class="w">        </span><span class="n">foreign_lib</span>::<span class="n">do_stuff</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">resource_handle</span><span class="p">,</span><span class="w"> </span><span class="n">foreign_params</span><span class="p">);</span><span class="w">
+</span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div>
+<h4 id="ownership-and-the-drop-check">Ownership and the drop check</h4>
+
+<p>Rust中通过<code>Ownership</code> + <code>Lifetime</code>提供了一些规则来避免像闲空指针这类的内存安全问题但梦想很美好现实很残酷,
+很多时候编译器本身其实分辨不出来到底哪个的<code>Lifetime</code>更长,比如:</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-rust" data-lang="rust"><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-rust" data-lang="rust"><span class="kd">let</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">vec</span><span class="o">!</span><span class="p">[],</span><span class="w"> </span><span class="n">vec</span><span class="o">!</span><span class="p">[]);</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>这种情况下是无法确认x和y到底哪个活得更长.这有啥关系吗?关系大了,这动摇了<code>Ownership</code> + <code>Lifetime</code>的体系根基
+如果处理不好就会出现闲空指针.</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-rust" data-lang="rust"><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">struct</span> <span class="nc">Inspector</span><span class="o">&lt;</span><span class="na">&#39;a</span><span class="o">&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="na">&#39;a</span><span class="w"> </span><span class="kt">u8</span><span class="p">);</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">impl</span><span class="o">&lt;</span><span class="na">&#39;a</span><span class="o">&gt;</span><span class="w"> </span><span class="nb">Drop</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">Inspector</span><span class="o">&lt;</span><span class="na">&#39;a</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="k">fn</span> <span class="nf">drop</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span><span class="w"> </span><span class="bp">self</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">        </span><span class="c1">// 1. 因为无法确认days和inspector的生命周期到底谁长,如果days先被drop这里就会构成闲空指针
+</span><span class="c1"></span><span class="w">        </span><span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&#34;I was only {} days from retirement!&#34;</span><span class="p">,</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="mi">0</span><span class="p">);</span><span class="w">
+</span><span class="w">        </span><span class="c1">// 2. 现在的编译器还没有智能到能看出drop的方法实现即使不使用也不能通过编译
+</span><span class="c1"></span><span class="w">        </span><span class="c1">//println!(&#34;Just drop!&#34;);
+</span><span class="c1"></span><span class="w">    </span><span class="p">}</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">fn</span> <span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="p">(</span><span class="n">inspector</span><span class="p">,</span><span class="w"> </span><span class="n">days</span><span class="p">);</span><span class="w">
+</span><span class="w">    </span><span class="n">days</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">Box</span>::<span class="n">new</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w">
+</span><span class="w">    </span><span class="n">inspector</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Inspector</span><span class="p">(</span><span class="o">&amp;</span><span class="n">days</span><span class="p">);</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>针对上门面的问题Rust先后出台了<a href="https://github.com/rust-lang/rfcs/blob/master/text/1238-nonparametric-dropck.md">RFC 1238</a>和
+<a href="https://github.com/rust-lang/rfcs/blob/master/text/1327-dropck-param-eyepatch.md">RFC 1327</a>的RFC.
+简单概括就是</p>
+
+<ol>
+<li>对于一个实现了Drop的范型类型对于它的范型参数必须<strong>严格</strong>的超过它</li>
+<li>通过<code>#[may_dangle]</code>明确指明不会去使用借用的数据</li>
+</ol>
+
+<p>That&rsquo;s All?当然不是,看个例子</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-rust" data-lang="rust"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">struct</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="n">data</span>: <span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="c1">// *const for variance!
+</span><span class="c1"></span><span class="w">    </span><span class="n">len</span>: <span class="kt">usize</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="n">cap</span>: <span class="kt">usize</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div>
+<p><code>*const T</code>是Row poiner这时编译器并不会为其附加所有权关系,也就是说<code>Vec</code>和类型<code>T</code>之间没有半毛钱关系
+更别提<code>lifetime</code>约束了(至少在drop checker的视角下是这样).当drop checker路过的时候也不去关心这里面到底是怎么样的
+就有可能导致在drop函数中访问到已经被析构的数据导致悬空指针,当然可以通过PhantomData来解决这个问题.通过添加PhantomData
+明确告诉编译器<code>Vec</code>拥有类型<code>T</code>,在drop<code>Vec</code>的时候顺带的一起drop掉<code>T</code>的实例：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre class="chroma"><code class="language-rust" data-lang="rust"><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre class="chroma"><code class="language-rust" data-lang="rust"><span class="k">use</span><span class="w"> </span><span class="n">std</span>::<span class="n">marker</span><span class="p">;</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="k">struct</span> <span class="nb">Vec</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span><span class="w">    </span><span class="n">data</span>: <span class="o">*</span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="p">,</span><span class="w"> </span><span class="c1">// *const for covariance!
+</span><span class="c1"></span><span class="w">    </span><span class="n">len</span>: <span class="kt">usize</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="n">cap</span>: <span class="kt">usize</span><span class="p">,</span><span class="w">
+</span><span class="w">    </span><span class="n">_marker</span>: <span class="nc">marker</span>::<span class="n">PhantomData</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span><span class="w">
+</span><span class="w"></span><span class="p">}</span><span class="w">
+</span></code></pre></td></tr></table>
+</div>
+</div>
+<p>当<code>struct</code>并没有实际拥有类型<code>T</code>的数据时需要使用<code>PhantomData&lt;&amp;'a T&gt;</code> 或者 <code>PhantomData&lt;* const T&gt;</code>来明确指定所有权关系</p>
+
+<h4 id="参考链接">参考链接</h4>
+
+<ol>
+<li><a href="https://doc.rust-lang.org/nomicon/dropck.html">dropck</a></li>
+<li><a href="https://doc.rust-lang.org/nomicon/phantom-data.html#phantomdata">phantom-data</a></li>
+</ol>
+
+    </div>
+
+    <div class="post-copyright">
+  <p class="copyright-item">
+    <span class="item-title">文章作者</span>
+    <span class="item-content">Yui</span>
+  </p>
+  <p class="copyright-item">
+    <span class="item-title">上次更新</span>
+    <span class="item-content">
+        2018-11-27
+        
+    </span>
+  </p>
+  
+  
+</div>
+<footer class="post-footer">
+      <div class="post-tags">
+          <a href="/tags/rust/">Rust</a>
+          <a href="/tags/type-system/">Type System</a>
+          </div>
+      <nav class="post-nav">
+        <a class="prev" href="/post/flutter/build_environments_in_flutter/">
+            <i class="iconfont icon-left"></i>
+            <span class="prev-text nav-default">Different Profiles in Flutter apps</span>
+            <span class="prev-text nav-mobile">上一篇</span>
+          </a>
+        <a class="next" href="/post/hello/">
+            <span class="next-text nav-default">Hello</span>
+            <span class="next-text nav-mobile">下一篇</span>
+            <i class="iconfont icon-right"></i>
+          </a>
+      </nav>
+    </footer>
+  </article>
+        </div>
+        
+  
+  
+
+  
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="social-links">
+      <a href="https://github.com/YuiFn" class="iconfont icon-github" title="github"></a>
+  <a href="http://localhost:1313/index.xml" type="application/rss+xml" class="iconfont icon-rss" title="rss"></a>
+</div>
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://gohugo.io">Hugo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/olOwOlo/hugo-theme-even">Even</a>
+  </span>
+
+  
+
+  <span class="copyright-year">
+    &copy; 
+    2017 - 
+    2019
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">Yui</span>
+  </span>
+</div>
+    </footer>
+
+    <div class="back-to-top" id="back-to-top">
+      <i class="iconfont icon-up"></i>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js" integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js" integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="/dist/even.26188efa.min.js"></script>
+
+<script id="baidu_analytics">
+  var _hmt = _hmt || [];
+  (function() {
+    if (window.location.hostname === 'localhost') return;
+    var hm = document.createElement("script"); hm.async = true;
+    hm.src = "https://hm.baidu.com/hm.js?37b4eec6344fe6048329351e0bff8f31";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+  })();
+</script>
+
+
+
+
+
+
+</body>
+</html>
